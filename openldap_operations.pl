@@ -8,8 +8,8 @@
 # You have to configure OpenLDAP with --enable-monitor and
 # set database monitor in slapd.conf in order to use this script
 #
-# Copyright (C) 2005 Clement OUDOT
-# Copyright (C) 2005 LINAGORA
+# Copyright (C) 2009 Clement OUDOT
+# Copyright (C) 2009 LTB-project.org
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

@@ -9,8 +9,8 @@
 # - RootDSE base search
 # - suffix (found in RootDSE) sub search (20 entries max) 
 #
-# Copyright (C) 2005 Clement OUDOT
-# Copyright (C) 2005 LINAGORA
+# Copyright (C) 2009 Clement OUDOT
+# Copyright (C) 2009 LTB-project.org
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
