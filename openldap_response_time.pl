@@ -41,9 +41,6 @@ use Time::HiRes qw(gettimeofday);
 # Command line parameters
 my ($host, $port, $binddn, $bindpw, $timeout, $ldap_version) = &options;
 
-# Name of the Operations branch in monitor
-my $branch = "cn=Operations,cn=Monitor";
-
 #====================================================================
 # options() subroutine
 #====================================================================
