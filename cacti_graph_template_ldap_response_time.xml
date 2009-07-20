@@ -1,9 +1,9 @@
 <cacti>	
 	<hash_0000069d10a3469b1f25afc3fda09387d49e17>
-		<name>OpenLDAP - response time</name>
+		<name>LDAP - response time</name>
 		<graph>
 			<t_title></t_title>
-			<title>|host_description| - OpenLDAP - response time</title>
+			<title>|host_description| - LDAP - response time</title>
 			<t_image_format_id></t_image_format_id>
 			<image_format_id>1</image_format_id>
 			<t_height></t_height>
@@ -251,10 +251,10 @@
 		</inputs>
 	</hash_0000069d10a3469b1f25afc3fda09387d49e17>
 	<hash_010006ae488a0362532385f6642585c4cc8598>
-		<name>OpenLDAP - response time</name>
+		<name>LDAP - response time</name>
 		<ds>
 			<t_name></t_name>
-			<name>|host_description| - OpenLDAP - response time</name>
+			<name>|host_description| - LDAP - response time</name>
 			<data_input_id>hash_03000609134e18bf8fef6d4e2a3147ac636439</data_input_id>
 			<t_rra_id></t_rra_id>
 			<t_rrd_step></t_rrd_step>
@@ -341,9 +341,9 @@
 		</data>
 	</hash_010006ae488a0362532385f6642585c4cc8598>
 	<hash_03000609134e18bf8fef6d4e2a3147ac636439>
-		<name>OpenLDAP - response time</name>
+		<name>LDAP - response time</name>
 		<type_id>1</type_id>
-		<input_string>perl &amp;lt;path_cacti&amp;gt;/scripts/openldap_response_time.pl -h &amp;lt;hostname&amp;gt; -p &amp;lt;port&amp;gt; -D &amp;lt;binddn&amp;gt; -W  &amp;lt;bindpw&amp;gt; -t &amp;lt;timeout&amp;gt; -v &amp;lt;ldap_version&amp;gt;</input_string>
+		<input_string>perl &amp;lt;path_cacti&amp;gt;/scripts/ldap_response_time.pl -h &amp;lt;hostname&amp;gt; -p &amp;lt;port&amp;gt; -D &amp;lt;binddn&amp;gt; -W  &amp;lt;bindpw&amp;gt; -t &amp;lt;timeout&amp;gt; -v &amp;lt;ldap_version&amp;gt;</input_string>
 		<fields>
 			<hash_0700065fd8a9398bdf8d812a020cba97830b4d>
 				<name>Host IP or DNS</name>
