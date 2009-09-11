@@ -39,7 +39,7 @@ use Time::HiRes qw(gettimeofday);
 # Configuration
 #====================================================================
 # Command line parameters
-my ($host, $port, $binddn, $bindpw, $timeout, $ldap_version) = &options;
+my ($host, $port, $binddn, $bindpw, $timeout, $ldap_version, $suffix) = &options;
 
 #====================================================================
 # options() subroutine
@@ -47,22 +47,23 @@ my ($host, $port, $binddn, $bindpw, $timeout, $ldap_version) = &options;
 sub options {
 	# Init Options Hash Table
 	my %opts;
-	getopt('hpDWtv',\%opts);
+	getopt('hpDWtvs',\%opts);
 	&usage unless exists $opts{"h"};
 	$opts{"p"} = 389 unless exists $opts{"p"};
 	$opts{"t"} = 5 unless exists $opts{"t"};
 	$opts{"v"} = 3 unless exists $opts{"v"};
+	$opts{"s"} = "auto" unless exists $opts{"v"};
 
-	return ($opts{"h"}, $opts{"p"}, $opts{"D"}, $opts{"W"}, $opts{"t"}, $opts{"v"});
+	return ($opts{"h"}, $opts{"p"}, $opts{"D"}, $opts{"W"}, $opts{"t"}, $opts{"v"}, $opts{"s"});
 }
 
 #====================================================================
 # usage() subroutine
 #====================================================================
 sub usage {
-	print STDERR "Usage: $0 -h host [-p port] [-D binddn -W bindpw] [-t timeout] [-v ldap_version]\n";
+	print STDERR "Usage: $0 -h host [-p port] [-D binddn -W bindpw] [-t timeout] [-v ldap_version] [-s suffix]\n";
 	print STDERR "Default values are :\n";
-	print STDERR "\tport: 389\n\tbinddn/bindpw: without (anonymous connection)\n\ttimeout: 5\n\tldap_version: 3\n";
+	print STDERR "\tport: 389\n\tbinddn/bindpw: without (anonymous connection)\n\ttimeout: 5\n\tldap_version: 3\n\tsuffix: auto";
 	exit 1;
 }
 
@@ -106,25 +107,29 @@ if ($search->code) {
 	print STDERR "Root DSE search : ".$search->error." (code ".$search->code.")\n";
 	exit 1 ;
 }
-$rootdsesearch_time = gettimeofday() - $rootdsesearch_time,
+$rootdsesearch_time = gettimeofday() - $rootdsesearch_time;
 
 # Suffix search
-my $suffix = ($search->shift_entry())->get_value('namingContexts');
 my $suffix_time = gettimeofday();
-my $suffix_search = $ldap->search(	base => "$suffix",
-					scope => 'sub',
-					filter => 'objectClass=*',
-					attrs => ['1.1'],
-					sizelimit => '20',
-					timelimit => "$timeout");
+$suffix = ($search->shift_entry())->get_value('namingContexts') if ($suffix eq "auto");
+if ($suffix ne "none") {
+	my $suffix_search = $ldap->search(	base => "$suffix",
+			scope => 'sub',
+			filter => 'objectClass=*',
+			attrs => ['1.1'],
+			sizelimit => '20',
+			timelimit => "$timeout");
 
-if ($suffix_search->code && $suffix_search->code != 4) {
-	print "bind:$bind_time rootdsesearch:$rootdsesearch_time suffixsearch:U\n";
-	$ldap->unbind;
-	print STDERR "Suffix search : ".$suffix_search->error." (code ".$suffix_search->code.")\n";
-	exit 1 ;
+	if ($suffix_search->code && $suffix_search->code != 4) {
+		print "bind:$bind_time rootdsesearch:$rootdsesearch_time suffixsearch:U\n";
+		$ldap->unbind;
+		print STDERR "Suffix search : ".$suffix_search->error." (code ".$suffix_search->code.")\n";
+		exit 1 ;
+	}
+	$suffix_time = gettimeofday() - $suffix_time;
+} else {
+	$suffix_time = "U";
 }
-$suffix_time = gettimeofday() - $suffix_time,
 
 # Unbind
 $ldap->unbind;
