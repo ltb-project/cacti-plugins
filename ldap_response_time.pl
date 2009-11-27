@@ -52,7 +52,7 @@ sub options {
 	$opts{"p"} = 389 unless exists $opts{"p"};
 	$opts{"t"} = 5 unless exists $opts{"t"};
 	$opts{"v"} = 3 unless exists $opts{"v"};
-	$opts{"s"} = "auto" unless exists $opts{"v"};
+	$opts{"s"} = "auto" unless exists $opts{"s"};
 
 	return ($opts{"h"}, $opts{"p"}, $opts{"D"}, $opts{"W"}, $opts{"t"}, $opts{"v"}, $opts{"s"});
 }
