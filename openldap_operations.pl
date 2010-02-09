@@ -37,7 +37,7 @@ use Getopt::Std;
 # Configuration
 #====================================================================
 # Command line parameters
-my ($host, $port, $binddn, $bindpw, $timeout, $ldap_version) = &options;
+my ( $host, $port, $binddn, $bindpw, $timeout, $ldap_version ) = &options;
 
 # Name of the Operations branch in monitor
 my $branch = "cn=Operations,cn=Monitor";
@@ -46,60 +46,69 @@ my $branch = "cn=Operations,cn=Monitor";
 # options() subroutine
 #====================================================================
 sub options {
-	# Init Options Hash Table
-	my %opts;
-	getopt('hpDWtv',\%opts);
-	&usage unless exists $opts{"h"};
-	$opts{"p"} = 389 unless exists $opts{"p"};
-	$opts{"t"} = 5 unless exists $opts{"t"};
-	$opts{"v"} = 3 unless exists $opts{"v"};
 
-	return ($opts{"h"}, $opts{"p"}, $opts{"D"}, $opts{"W"}, $opts{"t"}, $opts{"v"});
+    # Init Options Hash Table
+    my %opts;
+    getopt( 'hpDWtv', \%opts );
+    &usage unless exists $opts{"h"};
+    $opts{"p"} = 389 unless exists $opts{"p"};
+    $opts{"t"} = 5   unless exists $opts{"t"};
+    $opts{"v"} = 3   unless exists $opts{"v"};
+
+    return ( $opts{"h"}, $opts{"p"}, $opts{"D"}, $opts{"W"}, $opts{"t"},
+        $opts{"v"} );
 }
 
 #====================================================================
 # usage() subroutine
 #====================================================================
 sub usage {
-	print STDERR "Usage: $0 -h host [-p port] [-D binddn -W bindpw] [-t timeout] [-v ldap_version]\n";
-	print STDERR "Default values are :\n";
-	print STDERR "port: 389\nbinddn/bindpw: without (anonymous connection)\ntimeout: 5\nldap_version: 3\n";
-	exit 1;
+    print STDERR
+"Usage: $0 -h host [-p port] [-D binddn -W bindpw] [-t timeout] [-v ldap_version]\n";
+    print STDERR "Default values are :\n";
+    print STDERR
+"port: 389\nbinddn/bindpw: without (anonymous connection)\ntimeout: 5\nldap_version: 3\n";
+    exit 1;
 }
 
 #====================================================================
 # Connection to OpenLDAP monitor
 #====================================================================
 # Create LDAP connection
-my $ldap = Net::LDAP->new(	$host, 
-				port => $port,
-				version => $ldap_version,
-				timeout => $timeout) or die "Unable to connect to $host on port $port\n";
+my $ldap = Net::LDAP->new(
+    $host,
+    port    => $port,
+    version => $ldap_version,
+    timeout => $timeout
+) or die "Unable to connect to $host on port $port\n";
 
 # Bind (anonymous or no)
-my $bind ;
+my $bind;
 
 if ( $binddn && $bindpw ) {
-	$bind = $ldap->bind($binddn, password => $bindpw);
-} else {
-	$bind = $ldap->bind;
+    $bind = $ldap->bind( $binddn, password => $bindpw );
+}
+else {
+    $bind = $ldap->bind;
 }
 
 if ( $bind->code ) {
-	print STDERR "Bind : ".$bind->error."\n";
-	exit 1;
+    print STDERR "Bind : " . $bind->error . "\n";
+    exit 1;
 }
 
 # Search
-my $search = $ldap->search( 	base => $branch,
-				scope => 'one',
-				filter => 'objectClass=*',
-				attrs => ['monitorOpInitiated','monitorOpCompleted', 'cn']);
+my $search = $ldap->search(
+    base   => $branch,
+    scope  => 'one',
+    filter => 'objectClass=*',
+    attrs  => [ 'monitorOpInitiated', 'monitorOpCompleted', 'cn' ]
+);
 
 if ( $search->code ) {
-	print STDERR "Search : ".$search->error."\n";
-	$ldap->unbind;
-	exit 1 ;
+    print STDERR "Search : " . $search->error . "\n";
+    $ldap->unbind;
+    exit 1;
 }
 
 # Unbind
@@ -108,14 +117,14 @@ $ldap->unbind;
 #====================================================================
 # Parse results
 #====================================================================
-foreach ($search->entries) {
-	my $cn = lc($_->get_value('cn'));
-	my $initiated = $_->get_value('monitorOpInitiated');
-	my $completed = $_->get_value('monitorOpCompleted');
-	$initiated = "U" unless defined $initiated;
-	$completed = "U" unless defined $completed;
-	print "$cn-initiated:$initiated ";
-	print "$cn-completed:$completed ";
+foreach ( $search->entries ) {
+    my $cn        = lc( $_->get_value('cn') );
+    my $initiated = $_->get_value('monitorOpInitiated');
+    my $completed = $_->get_value('monitorOpCompleted');
+    $initiated = "U" unless defined $initiated;
+    $completed = "U" unless defined $completed;
+    print "$cn-initiated:$initiated ";
+    print "$cn-completed:$completed ";
 }
 
 print "\n";
